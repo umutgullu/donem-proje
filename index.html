@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Su Krizi - Hayatta Kalma Simülasyonu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #050505;
+            color: #ccffcc;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            border: 2px solid #33ff00;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(51, 255, 0, 0.2);
+        }
+
+        .lose { border-color: #ff3333; box-shadow: 0 0 20px rgba(255, 51, 51, 0.2); }
+
+        .header {
+            border-bottom: 1px solid #1a8000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h1 {
+            color: #33ff00;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #33ff00;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .win { color: #33ff00; }
+        .red { color: #ff3333; }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #0f0f0f;
+            padding: 10px;
+            border: 1px dashed #1a8000;
+            margin-bottom: 20px;
+        }
+
+        .stats span {
+            color: #33ff00;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .log {
+            min-height: 40px;
+            margin-bottom: 20px;
+            color: #ffff00;
+            font-size: 0.9rem;
+        }
+
+        .event {
+            border-left: 4px solid #33ff00;
+            padding: 15px;
+            background: rgba(51, 255, 0, 0.05);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: grid;
+            gap: 15px;
+        }
+
+        button {
+            background: black;
+            color: #33ff00;
+            border: 1px solid #33ff00;
+            padding: 15px;
+            font: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #33ff00;
+            color: black;
+            box-shadow: 0 0 15px #33ff00;
+        }
+
+        p { line-height: 1.8; margin: 10px 0; }
+        .center { text-align: center; }
+        form { margin: 0; }
+
+        /* Hoşgeldiniz ekranı için özel stiller */
+        .welcome-box {
+            background: rgba(51, 255, 0, 0.05);
+            border: 1px dashed #33ff00;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            color: #33ff00;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #33ff00;
+        }
+
+        .warning {
+            color: #ffff00;
+            text-align: center;
+            font-size: 0.9rem;
+            margin: 15px 0;
+        }
+
+        .mission {
+            background: #0f0f0f;
+            border-left: 3px solid #33ff00;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .droplet {
+            color: #33ff00;
+            font-size: 2rem;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container {% if page == 'end' and not win %}lose{% endif %}">
+    <div class="header">
+        <h1>SU KRİZİ SİMÜLASYONU</h1>
+        <small>v.1.0.7</small>
+    </div>
+
+    {% if page == 'welcome' %}
+        <div class="welcome-box">
+            <div class="droplet">💧</div>
+            <h2 class="welcome-title">HOŞGELDİNİZ</h2>
+            
+            <p class="center">BU OYUN SU KITLIĞI HAKKINDA FARKINDALIK OLUŞTURMAK AMACIYLA GELİŞTİRİLMİŞTİR.</p>
+            
+            <div class="mission">
+                <p><strong>GÖREV:</strong> 30 GÜN BOYUNCA HAYATTA KALIN</p>
+                <p><strong>ZORLUK:</strong> HER GÜN SU AZALIYOR</p>
+                <p><strong>SEÇİMLER:</strong> HER KARARINIZ ÖNEMLİ</p>
+            </div>
+
+            <p class="warning">⚠ GERÇEK HAYATTA SU KRİZİ OYUNDA OLDUĞUNDAN ÇOK DAHA CİDDİ BİR SORUNDUR</p>
+            
+            <p class="center" style="margin-top: 20px;">SU HAYATTIR. SAHİP ÇIKIN!</p>
+        </div>
+
+        <form action="/intro" method="POST">
+            <button>DEVAM ET</button>
+        </form>
+    {% endif %}
+
+    {% if page == 'start' %}
+        <p>SİSTEM BAŞLATILIYOR...</p>
+        <p>SU REZERVİ: KRİTİK SEVİYE</p>
+        <p>HEDEF: 30 GÜN HAYATTA KAL</p>
+        <br>
+        <form action="/start" method="POST">
+            <button>SİMÜLASYONU BAŞLAT</button>
+        </form>
+    {% endif %}
+
+    {% if page == 'game' %}
+        <div class="stats">
+            <div>GÜN: <span>{{ day }}</span>/30</div>
+            <div>SU: <span>{{ water }}</span> LT</div>
+        </div>
+
+        {% if msg %}
+        <div class="log">> {{ msg }}</div>
+        {% endif %}
+
+        <div class="event">{{ event_text }}</div>
+
+        <div class="buttons">
+            {% for opt in options %}
+            <form action="/action" method="POST">
+                <input type="hidden" name="choice" value="{{ opt.val }}">
+                <button>{{ opt.txt }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if page == 'end' %}
+        <div class="center">
+            <h2 class="{% if win %}win{% else %}red{% endif %}">{{ title }}</h2>
+            <p>{{ message }}</p>
+            <br>
+            <form action="/">
+                <button>SİSTEMİ YENİDEN BAŞLAT</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
